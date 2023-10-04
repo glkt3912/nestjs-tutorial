@@ -1,44 +1,19 @@
-import { Controller, Get, HttpCode, Post, Req, Header, Redirect, Param, HttpRedirectResponse, Body } from '@nestjs/common';
-import { CreateCatDto } from './dtc/create-cat.dto';
+import { Controller, Get, Post, Body } from '@nestjs/common';
+import { CreateCatDto } from '../dto/create-cat.dto';
+import { CatsService } from './cats.service';
+import { Cat } from '../interfaces/cat.interface';
 
 @Controller('cats')
 export class CatsController {
-	// @Post()
-	// @HttpCode(204)
-	// create(): string {
-	// 	return 'This action adds a new cat'
-	// }
-
-	// @Get()
-	// findAll(@Req() request: Request): string {
-	// 	return 'This action returns all cats';
-	// }
-
-	@Get('ab*cd')
-	@Redirect('https://nestjs.com', 301)
-	findWildcard() {
-		return 'This route uses a wildcard';
-	}
+	constructor(private catsService: CatsService) { }
 
 	@Post()
-	@Header('Cache-Control', 'none')
-	createCustomHeader() {
-		return 'This action adds a new cat';
+	async create(@Body() createCatDto: CreateCatDto) {
+		this.catsService.create(createCatDto);
 	}
 
-	@Get(':id')
-	findOne(@Param() params: any): string {
-		return `This action returns a #${params.id} cat`;
-	}
-
-	// Data extraction
 	@Get()
-	async findAll(): Promise<any[]> {
-		return [];
+	async findAll(): Promise<Cat[]> {
+		return this.catsService.findAll();
 	}
-
-	@Post()
-	async create(@Body() cretateCat)
 }
-
-
